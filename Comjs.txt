@@ -1,0 +1,80 @@
+function init()
+{
+
+  var top=document.createElement("div");
+  var bottom=document.createElement("div");
+  top.setAttribute("id","textarea");
+  bottom.setAttribute("id","output");
+  bottom.innerHTML="OUTPUT:";
+
+  var text=document.createElement("textarea");
+  text.setAttribute("id","textbox");
+  text.setAttribute("placeholder","Enter your code here");
+  
+  document.body.appendChild(top);
+  document.body.appendChild(bottom);
+  top.appendChild(text);
+  
+  submitbutton=document.createElement("button");
+  submitbutton.innerHTML="Compile";
+  submitbutton.setAttribute("id","compile")
+  document.body.appendChild(submitbutton);
+  
+}
+
+
+
+init();
+
+var compile=document.getElementById("compile");
+
+compile.addEventListener("click",function()
+{
+  var output=document.getElementById("output");
+  output.innerHTML="Compiling...";
+
+  var request=new XMLHttpRequest();
+  request.open("POST"," https://codequotient.com/api/executeCode");
+
+  var x= document.getElementById("textbox");
+  var y= document.getElementById("list");
+
+  request.setRequestHeader("Content-Type","application/json");
+  //console.log(y.value);
+  request.send(JSON.stringify({"code" : x.value, "langId" : y.value}));
+ 
+  var codeId;
+  
+  request.addEventListener("load",function(event)
+  {
+    codeid=JSON.parse(event.target.response).codeId;
+ 
+var temp=setTimeout(function() 
+ { var req=new XMLHttpRequest;
+  var string=" https://codequotient.com/api/codeResult/"+codeid;
+  req.open("GET",string);
+  req.send();
+  
+  req.addEventListener("load",resfunction)
+ },6000);
+  })
+ 
+
+})
+
+function resfunction(event)
+ {
+     var d=event.target.responseText;
+     var x=JSON.parse(d);
+     //console.log(JSON.parse(x.data).output);
+
+     var out= document.getElementById("output");
+     //console.log(JSON.parse(x.data));
+     out.innerHTML="";
+    if(JSON.parse(x.data).output!='')
+      out.innerHTML=JSON.parse(x.data).output;
+    else
+      out.innerHTML="Error : " + JSON.parse(x.data).errors;
+
+     
+  }
